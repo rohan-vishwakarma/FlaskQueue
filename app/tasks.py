@@ -7,10 +7,11 @@ from .models import Products
 from app import create_app
 app = create_app()
 
+
 @celery_app.task
 def add(x, y):
     print("Task Started By rohan")
-    time.sleep(1)
+    time.sleep(10)
 
     # Push the Flask app context for database queries
     with app.app_context():
@@ -31,6 +32,5 @@ def sub(x, y):
 @celery_app.task
 def updates():
     return "Updates Completed With Schedular"
-
 
 
