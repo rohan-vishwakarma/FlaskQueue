@@ -2,11 +2,13 @@ import io
 import csv
 from marshmallow import Schema, fields, ValidationError, validates
 
+
 class JobSchema(Schema):
-    jobname = fields.String(
+    dataset_id = fields.Str()
+    datasetname = fields.String(
         required=True,
         validate=lambda n: len(n) > 3,
-        error_messages={"required": "Jobname is required.", "invalid": "Jobname must be longer than 3 characters."}
+        error_messages={"required": "datasetname is required.", "invalid": "datasetname must be longer than 3 characters."}
     )
     csvfile = fields.Raw(required=True, error_messages={"required": "A CSV file is required."})
 
@@ -21,3 +23,17 @@ class JobSchema(Schema):
             csv.reader(stream)
         except Exception:
             raise ValidationError("The file is not a valid CSV format.")
+
+class CeleryTaskSchema(Schema):
+    id = fields.Int(required=True)
+    task_name = fields.Str()
+    task_id = fields.Str()
+    queue    = fields.Str()
+    progress = fields.Int()
+    created_at = fields.DateTime(format="iso")  # ISO 8601 format
+    updated_at = fields.DateTime(format="iso")
+    status = fields.Str()
+
+    datasets = fields.Nested(JobSchema, many=True)
+
+

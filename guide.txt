@@ -1,3 +1,4 @@
 To Run Flask App -> python run.py
 To Start Worker  -> celery -A app.celery_app worker --loglevel Info
 To Start Beat    -> celery -A app.celery_app beat --loglevel Info
+To Start Worker For The Queues ->  celery -A app.celery_app worker -Q flask@testing,flask@process-csv --loglevel=info

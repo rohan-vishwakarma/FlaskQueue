@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from .routes import bp
 from .models import db
 from flask_restful import Api
-from app.controllers import Etl
+from app.controllers import etl
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -16,7 +16,7 @@ def create_app():
     app.register_blueprint(bp)
     api = Api(app)
     api.prefix = '/api'
-    api.add_resource(Etl.Extract, '/etl/extract')
+    api.add_resource(etl.Extract, '/etl/extract')
     db.init_app(app)
     with app.app_context():
         from .models import Products
