@@ -8,12 +8,7 @@
 
     <!-- Light/dark mode -->
     <script>
-        /*!
-         * Color mode toggler for Bootstrap's docs (https://getbootstrap.com/)
-         * Copyright 2011-2024 The Bootstrap Authors
-         * Licensed under the Creative Commons Attribution 3.0 Unported License.
-         * Modified by Simpleqode
-         */
+
 
         (() => {
           'use strict';
@@ -519,7 +514,7 @@
         </div>
 
         <!-- Page content -->
-        <form>
+        <form method="post" id="asyncForm">
             <section class="card card-line bg-body-tertiary border-transparent mb-5">
                 <div class="card-body">
 
@@ -527,7 +522,7 @@
                         <div class="col">
                             <div class="mb-0">
                                 <label class="form-label" for="projectTitle">Task / Job Name</label>
-                                <input class="form-control bg-body" id="projectTitle" type="text"/>
+                                <input class="form-control bg-body" id="projectTitle" name="datasetname" type="text"/>
                             </div>
                         </div>
 
@@ -538,7 +533,7 @@
                     <div class="mb-0">
                         <label for="dropzone">Upload Csv</label>
                         <div class="form-text mt-0 mb-3">Attach files to this customer.</div>
-                        <input type="file" name="uploadcsv" id="uploadcsv" style="border: 1px solid white">
+                        <input type="file" name="csvfile" id="csvfile" style="border: 1px solid white">
                     </div>
                 </div>
             </section>
@@ -548,8 +543,32 @@
     </div>
 </main>
 
-<!-- JAVASCRIPT -->
-<!-- Map JS -->
+<script>
+    document.getElementById('asyncForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      const form = event.target;
+      const formData = new FormData(form);
+       console.log("Rohan", formData);
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/etl/extract', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          document.getElementById('response').textContent = `Success: ${result.message}`;
+        } else {
+          document.getElementById('response').textContent = `Error: ${response.statusText}`;
+        }
+      } catch (error) {
+        document.getElementById('response').textContent = `Error: ${error.message}`;
+      }
+    });
+
+</script>
+
 <script src='../../../api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
 
 <!-- Vendor JS -->

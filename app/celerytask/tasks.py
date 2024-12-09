@@ -10,8 +10,6 @@ app = create_app()
 from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
 
-
-
 @celery_app.task(bind=True)
 def processCsvFile(self, file_content, datasetName):
     with app.app_context():
@@ -56,7 +54,7 @@ def processCsvFile(self, file_content, datasetName):
                     progress = int((rowProcessed / totalRows) * 100)
                     self.update_state(state='PROGRESS', meta={'progress': f"{progress}%"})
                     taskId = self.request.id
-                    updateProgress = progressSession.query(CeleryTask).first()
+                    updateProgress = progressSession.query(CeleryTask).filter_by(task_id=taskId).first()
                     updateProgress.progress = progress
                     progressSession.commit()
                     print(f"Progress: {progress}%")

@@ -31,8 +31,8 @@ class CeleryTask(db.Model):
     progress = db.Column(db.Float, nullable=False)
     result = db.Column(db.Text, nullable=True)  # Result of the task
     error_message = db.Column(db.Text, nullable=True)  # Error message if the task failed
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # When the task was created
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)  # Last update time
+    created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)  # When the task was created
+    updated_at = db.Column(db.DateTime, default=datetime.now(), onupdate=datetime.now(), nullable=False)  # Last update time
     datasets = relationship('Dataset', backref='celery_tasks', passive_deletes=True)
 
     def to_dict(self):
