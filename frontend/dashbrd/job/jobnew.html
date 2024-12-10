@@ -542,30 +542,54 @@
         </form>
     </div>
 </main>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
 
 <script>
-    document.getElementById('asyncForm').addEventListener('submit', async function(event) {
-      event.preventDefault(); // Prevent the default form submission
+  document.getElementById('asyncForm').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent the default form submission
 
-      const form = event.target;
-      const formData = new FormData(form);
-       console.log("Rohan", formData);
-      try {
+    const form = event.target;
+    const formData = new FormData(form);
+    console.log("Rohan", formData);
+
+    try {
         const response = await fetch('http://127.0.0.1:5000/api/etl/extract', {
-          method: 'POST',
-          body: formData,
+            method: 'POST',
+            body: formData,
         });
 
         if (response.ok) {
-          const result = await response.json();
-          document.getElementById('response').textContent = `Success: ${result.message}`;
+            const result = await response.json();
+            alertify.success(`Success: ${result.message}`);
+            document.getElementById('response').textContent = `Success: ${result.message}`;
+        } else if (response.status === 400) {
+            const errorData = await response.json();
+            if (errorData.errors) {
+                let errorMessages = [];
+                for (const [field, messages] of Object.entries(errorData.errors)) {
+                    messages.forEach(msg => {
+                        errorMessages.push(`${field}: ${msg}`);
+                    });
+                }
+                alertify.error(`Validation Errors:\n${errorMessages.join('\n')}`);
+                document.getElementById('response').textContent = `Validation Errors:\n${errorMessages.join('\n')}`;
+            } else {
+                alertify.error(`Error: ${response.statusText}`);
+                document.getElementById('response').textContent = `Error: ${response.statusText}`;
+            }
         } else {
-          document.getElementById('response').textContent = `Error: ${response.statusText}`;
+            alertify.error(`Error: ${response.statusText}`);
+            document.getElementById('response').textContent = `Error: ${response.statusText}`;
         }
-      } catch (error) {
+    } catch (error) {
+        alertify.error(`Error: ${error.message}`);
         document.getElementById('response').textContent = `Error: ${error.message}`;
-      }
-    });
+    }
+});
+
+
 
 </script>
 
