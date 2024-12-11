@@ -36,4 +36,7 @@ class CeleryTaskSchema(Schema):
 
     datasets = fields.Nested(JobSchema, many=True)
 
+class CeleryDeleteSchema(Schema):
+    task_id = fields.Str(required=True)
+
 

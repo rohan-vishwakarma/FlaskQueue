@@ -4,7 +4,7 @@
     <option name="settings">
       <QuickJinjaProjectSettings>
         <option name="loadVariablesFromFile" value="true" />
-        <option name="templateFilePath" value="$PROJECT_DIR$/frontend/dashbrd/job/jobnew.html" />
+        <option name="templateFilePath" value="$PROJECT_DIR$/app/controllers/etl.py" />
       </QuickJinjaProjectSettings>
     </option>
   </component>

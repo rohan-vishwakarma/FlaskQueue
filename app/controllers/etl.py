@@ -1,12 +1,12 @@
 from flask import Flask, request
 from flask_restful import Resource
 from marshmallow import ValidationError
-from app.schema.JobSchema import JobSchema
+from app.schema.JobSchema import JobSchema, CeleryDeleteSchema
 import os
 from app.models import db, CeleryTask, Dataset
 
 job_schema = JobSchema()
-
+deleteJobSchema = CeleryDeleteSchema()
 
 class Extract(Resource):
     def post(self):
@@ -31,7 +31,6 @@ class Extract(Resource):
         except Exception as ex:
             return {"errors": str(ex)}, 500
 
-
     def get(self):
         try:
             tasks = db.session.query(CeleryTask).join(Dataset).order_by(CeleryTask.created_at.desc(),
@@ -45,4 +44,26 @@ class Extract(Resource):
             return {"errors": err.messages}, 400
 
         except Exception as ex:
+            return {"errors": str(ex)}, 500
+
+    def delete(self):
+        try:
+
+            data = deleteJobSchema.load({
+                "task_id": request.form.get("task_id"),
+            })
+            taskId = data['task_id']
+
+            task = db.session.query(CeleryTask).filter_by(task_id=taskId).first()
+            if task is None:
+                return {"status": False, "message" : "Task Not Exist" ,"data": ""}, 200
+            db.session.query(CeleryTask).filter_by(task_id=taskId).delete()
+            db.session.commit()
+            return {"status": True, "message" : "Task Deleted" }, 200
+
+        except ValidationError as err:
+            return {"errors": err.messages}, 400
+
+        except Exception as ex:
+            db.session.rollback()
             return {"errors": str(ex)}, 500
