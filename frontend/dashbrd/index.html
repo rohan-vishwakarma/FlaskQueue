@@ -1018,16 +1018,18 @@
       </div>
     </main>
 
-    <!-- JAVASCRIPT -->
-    <!-- Map JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+
+    <script>
+          var socket = io('http://127.0.0.1:5000');
+          socket.on('connect', function() {
+              socket.emit('task_progress_update', {data: 'I\'m connected!'});
+              console.log("connected")
+          });
+
+       </script>
     <script src='../../api.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.js'></script>
-    
-    <!-- Vendor JS -->
     <script src="assets/js/vendor.bundle.js"></script>
-    
-    <!-- Theme JS -->
     <script src="assets/js/theme.bundle.js"></script>
   </body>
-
-<!-- Mirrored from yevgenysim-turkey.github.io/dashbrd/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 30 Nov 2024 08:45:57 GMT -->
 </html>

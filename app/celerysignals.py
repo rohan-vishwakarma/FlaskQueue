@@ -32,6 +32,7 @@ def task_sent_handler(task, task_id, *args, **kwargs):
                 args=args_serialized,
                 kwargs=kwargs['kwargs'],
                 queue = queue_name,
+                progress=0,
                 status=StatusEnum.PENDING,
                 created_at=datetime.now(),
                 updated_at=datetime.now()

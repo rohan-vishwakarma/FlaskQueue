@@ -7,14 +7,18 @@ from app import create_app
 from app.utils.etl_utilities import DatasetService
 from app.models import db, Dataset, CeleryTask
 app = create_app()
+
 from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
+
 
 @celery_app.task(bind=True)
 def processCsvFile(self, file_content, datasetName):
     with app.app_context():
         try:
             from pyspark.sql import SparkSession
+            from app import socketio
+
             spark = SparkSession.builder.master("local[*]").appName("CSVProcessor").getOrCreate()
             self.update_state(state='PROGRESS', meta={'progress': "IN PRogress"})
 
@@ -57,6 +61,12 @@ def processCsvFile(self, file_content, datasetName):
                     updateProgress = progressSession.query(CeleryTask).filter_by(task_id=taskId).first()
                     updateProgress.progress = progress
                     progressSession.commit()
+                    socketio.emit(
+                        'hello',
+                        {'progress': progress, 'task_id': self.request.id},
+                        room='celerytask',  # Room is set to the task ID
+                        namespace='/job/running'
+                    )
                     print(f"Progress: {progress}%")
                     if progressUpdatePoints:
                         nextUpdatePoint = progressUpdatePoints.pop(0)
@@ -69,6 +79,8 @@ def processCsvFile(self, file_content, datasetName):
             db.session.rollback()
         finally:
             spark.stop()
+
+
 
 
 @celery_app.task

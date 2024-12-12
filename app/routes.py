@@ -1,16 +1,24 @@
 import os
 
 from marshmallow import ValidationError
+from flask_socketio import  emit, join_room
 
 current_path = os.getcwd()
 from flask import Blueprint, render_template
 bp = Blueprint('bp', '__name__', template_folder='frontend', static_folder='frontend/dashbrd/assets')
 from .models import Products, db, CeleryTask, Dataset
-
+from app import socketio
 
 @bp.route('/', methods=['GET'])
 def index():
+    socketio.emit(
+        'hello',
+        {'progress': "progress", "task_id": "taskId"},
+        room="celerytask",
+        namespace='/job/running'
+    )
     return render_template('dashbrd/index.html')
+
 
 @bp.route('/jobs', methods=['GET'])
 def jobs():

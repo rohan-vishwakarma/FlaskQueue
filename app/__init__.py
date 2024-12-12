@@ -1,12 +1,17 @@
+from mimetypes import inited
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from .routes import bp
 from .models import db
 from flask_restful import Api
 from app.controllers import etl
 import os
 from dotenv import load_dotenv
+from app.socketio import socketio
 load_dotenv()
+
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -17,6 +22,8 @@ def create_app():
     api = Api(app)
     api.prefix = '/api'
     api.add_resource(etl.Extract, '/etl/extract')
+    socketio.init_app(app)
+
     db.init_app(app)
     with app.app_context():
         from .models import Products

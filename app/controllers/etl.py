@@ -1,6 +1,8 @@
 from flask import Flask, request
 from flask_restful import Resource
 from marshmallow import ValidationError
+from sqlalchemy import text
+
 from app.schema.JobSchema import JobSchema, CeleryDeleteSchema
 import os
 from app.models import db, CeleryTask, Dataset
@@ -48,15 +50,22 @@ class Extract(Resource):
 
     def delete(self):
         try:
-
             data = deleteJobSchema.load({
                 "task_id": request.form.get("task_id"),
             })
             taskId = data['task_id']
-
             task = db.session.query(CeleryTask).filter_by(task_id=taskId).first()
             if task is None:
-                return {"status": False, "message" : "Task Not Exist" ,"data": ""}, 200
+                return {"status": False, "message" : "Task Not Exist" ,"data": ""}, 400
+
+            celeryTaskId = task.task_id
+            dataset = db.session.query(Dataset.name, Dataset.task_id).filter_by(task_id=celeryTaskId).first()
+            if dataset is None:
+                return {"status": False, "message": "Dataset Not Found", "data": ""}, 200
+
+            escaped_table_name = f"`{dataset.name}`"
+
+            db.session.execute(text(f"DROP TABLE {escaped_table_name}"))
             db.session.query(CeleryTask).filter_by(task_id=taskId).delete()
             db.session.commit()
             return {"status": True, "message" : "Task Deleted" }, 200

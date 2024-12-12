@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="draftsState">
+      <draftsState>
+        <option name="requests">
+          <list>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="type" value="FORM_URL_ENCODED" />
+                  <option name="urlEncoded">
+                    <list>
+                      <urlEncodedParameterState>
+                        <option name="key" value="task_id" />
+                        <option name="value" value="d48e24a0-7f32-47c1-85ca-1efddd83e1ad" />
+                      </urlEncodedParameterState>
+                    </list>
+                  </option>
+                </bodyState>
+              </option>
+              <option name="id" value="73262fea-71e0-42c6-bdfa-9e35e2f75e73" />
+              <option name="method" value="DELETE" />
+              <option name="name" value="Etl" />
+              <option name="url" value="http://127.0.0.1:5000/api/etl/extract" />
+            </requestState>
+          </list>
+        </option>
+      </draftsState>
+    </option>
+    <option name="folders">
+      <list>
+        <folderState>
+          <option name="apis">
+            <list>
+              <integrationProperties>
+                <option name="name" value="API" />
+              </integrationProperties>
+            </list>
+          </option>
+          <option name="environmentGroups">
+            <list>
+              <environmentGroupState>
+                <option name="name" value="Default" />
+              </environmentGroupState>
+            </list>
+          </option>
+          <option name="id" value="938f892d-6788-438c-b3e6-a07fa0fb58e0" />
+          <option name="name" value="FlaskCelery" />
+          <option name="selectedEnvironmentIds">
+            <map>
+              <entry key="default" />
+            </map>
+          </option>
+          <option name="syncProperties">
+            <synchronizationPropertiesState>
+              <option name="autoSync" value="true" />
+              <option name="folderPath" value="C:\Users\Boppo Technologies\PycharmProjects\FlaskQueue\.jetclient" />
+            </synchronizationPropertiesState>
+          </option>
+        </folderState>
+      </list>
+    </option>
+    <option name="id" value="84642f6f-9219-47c1-a623-2815e8f86e5e" />
+    <option name="version" value="5" />
+  </component>
+</project>
