@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit, join_room
 # Initialize SocketIO
 socketio = SocketIO()
 
+
 @socketio.on('connect')
 def handle_connect():
     print("Client Connected")
