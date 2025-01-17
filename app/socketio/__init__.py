@@ -12,6 +12,7 @@ def handle_connect():
 @socketio.on('join', namespace='/job/running')
 def on_join(data):
     join_room("celerytask")
+    print("Data sended")
     emit('joined', {'msg': f'Joined room: Celery Task'}, room="celerytask")
 
 

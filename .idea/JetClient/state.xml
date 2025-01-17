@@ -13,7 +13,7 @@
                     <list>
                       <urlEncodedParameterState>
                         <option name="key" value="task_id" />
-                        <option name="value" value="d48e24a0-7f32-47c1-85ca-1efddd83e1ad" />
+                        <option name="value" value="7a318229-0a00-4047-9da8-b481044631bf" />
                       </urlEncodedParameterState>
                     </list>
                   </option>
@@ -23,6 +23,12 @@
               <option name="method" value="DELETE" />
               <option name="name" value="Etl" />
               <option name="url" value="http://127.0.0.1:5000/api/etl/extract" />
+            </requestState>
+            <requestState>
+              <option name="id" value="20d9fd55-6ff5-49d9-9343-aeffb6bbc992" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="url" value="http://127.0.0.1:5000/" />
             </requestState>
           </list>
         </option>

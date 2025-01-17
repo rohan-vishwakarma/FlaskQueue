@@ -60,12 +60,10 @@ class Extract(Resource):
 
             celeryTaskId = task.task_id
             dataset = db.session.query(Dataset.name, Dataset.task_id).filter_by(task_id=celeryTaskId).first()
-            if dataset is None:
-                return {"status": False, "message": "Dataset Not Found", "data": ""}, 200
 
-            escaped_table_name = f"`{dataset.name}`"
-
-            db.session.execute(text(f"DROP TABLE {escaped_table_name}"))
+            if dataset is not None:
+                escaped_table_name = f"`{dataset.name}`"
+                db.session.execute(text(f"DROP TABLE {escaped_table_name}"))
             db.session.query(CeleryTask).filter_by(task_id=taskId).delete()
             db.session.commit()
             return {"status": True, "message" : "Task Deleted" }, 200

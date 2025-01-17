@@ -7,8 +7,8 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 from app.models import CeleryTask, db
 from app import create_app
 from datetime import datetime
-import json
-from celery.signals import task_prerun, task_postrun, task_failure, task_retry, task_success
+import json, traceback
+from celery.signals import task_prerun, task_postrun, task_failure, task_retry, task_success, task_internal_error
 
 
 app = create_app()
@@ -82,6 +82,29 @@ def task_failed_handler(task_id, exception, *args, **kwargs):
         except SQLAlchemyError as e:
             db.session.rollback()
             print(f"Error updating task record on failure: {e}")
+
+@task_internal_error.connect
+def task_internal_error(task_id, args, kwargs, einfo, **extra_kwargs):
+    with app.app_context():
+        try:
+            task_record = CeleryTask.query.filter_by(task_id=task_id).first()
+            if task_record:
+                task_record.status = StatusEnum.FAILURE
+                task_record.updated_at = datetime.now()
+                db.session.commit()
+                print(f"Task {task_id} status updated to FAILURE.")
+            else:
+                print(f"No record found for task_id: {task_id}")
+        except SQLAlchemyError as db_error:
+            db.session.rollback()
+            print(f"Database error for task_id {task_id}: {db_error}")
+        except Exception as e:
+            print(f"Unexpected error in task_internal_error_handler: {e}")
+            traceback.print_exc()
+        finally:
+            # Log traceback information for debugging
+            print(f"Traceback for task_id {task_id}: {einfo.traceback}")
+
 
 @task_retry.connect
 def task_retry_handler(task_id, *args, **kwargs):

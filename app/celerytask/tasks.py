@@ -14,7 +14,9 @@ from sqlalchemy.orm import sessionmaker
 
 @celery_app.task(bind=True)
 def processCsvFile(self, file_content, datasetName):
+    tid = self.request.id
     with app.app_context():
+        spark = None
         try:
             from pyspark.sql import SparkSession
             from app import socketio
@@ -75,10 +77,18 @@ def processCsvFile(self, file_content, datasetName):
             print(f"Data successfully inserted into {tableName}")
 
         except Exception as e:
-            print(f"Error processing CSV file: {e}")
+            print(f"Error processing CSV file: {tid} {e}")  # Replace tid with taskId
             db.session.rollback()
+
+            update = db.session.query(CeleryTask).filter_by(task_id=tid).first()
+            if update:
+                update.status = "FAILURE"
+                db.session.commit()
+            else:
+                print(f"No record found for task ID: {taskId}")
         finally:
-            spark.stop()
+            if spark:
+                spark.stop()
 
 
 
