@@ -5,9 +5,9 @@ from .routes import bp
 from .models import db
 from flask_restful import Api
 from app.controllers import etl
+from app.controllers import jobs
 import os
 from dotenv import load_dotenv
-from app.socketio import socketio
 load_dotenv()
 
 
@@ -22,8 +22,7 @@ def create_app():
     api = Api(app)
     api.prefix = '/api'
     api.add_resource(etl.Extract, '/etl/extract')
-    socketio.init_app(app, cors_allowed_origins=["http://127.0.0.1:5000", "http://localhost:5000"])
-
+    api.add_resource(jobs.Jobs, '/dataset')
 
     db.init_app(app)
     with app.app_context():

@@ -40,6 +40,7 @@ class CeleryTask(db.Model):
             'id': self.id,
             'task_id': self.task_id,
             'task_name': self.task_name,
+            'args' : self.args,
             'status': self.status,
             'progress': self.progress,
             'created_at': self.created_at.isoformat(),

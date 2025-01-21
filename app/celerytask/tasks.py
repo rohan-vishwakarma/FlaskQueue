@@ -14,16 +14,15 @@ from sqlalchemy.orm import sessionmaker
 
 @celery_app.task(bind=True)
 def processCsvFile(self, file_content, datasetName):
+    print("Hello")
     tid = self.request.id
     with app.app_context():
         spark = None
         try:
             from pyspark.sql import SparkSession
-            from app import socketio
-
             spark = SparkSession.builder.master("local[*]").appName("CSVProcessor").getOrCreate()
             self.update_state(state='PROGRESS', meta={'progress': "IN PRogress"})
-
+            print("4", spark)
             # Load CSV into a PySpark DataFrame
             df = spark.read.csv(file_content, header=True, inferSchema=True)
             totalRows = df.count()
@@ -37,7 +36,7 @@ def processCsvFile(self, file_content, datasetName):
             db.session.execute(text(tableQuery))
             db.session.commit()
 
-            columns = df.columns
+            columns = [col.replace(' ', '_') for col in df.columns]
             column_names = ', '.join(columns)
             progressInterval = totalRows // 5
             rowProcessed = 0
@@ -63,12 +62,6 @@ def processCsvFile(self, file_content, datasetName):
                     updateProgress = progressSession.query(CeleryTask).filter_by(task_id=taskId).first()
                     updateProgress.progress = progress
                     progressSession.commit()
-                    socketio.emit(
-                        'hello',
-                        {'progress': progress, 'task_id': self.request.id},
-                        room='celerytask',  # Room is set to the task ID
-                        namespace='/job/running'
-                    )
                     print(f"Progress: {progress}%")
                     if progressUpdatePoints:
                         nextUpdatePoint = progressUpdatePoints.pop(0)

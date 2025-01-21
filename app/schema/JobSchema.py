@@ -1,5 +1,8 @@
 import io
 import csv
+from array import array
+from calendar import error
+
 from marshmallow import Schema, fields, ValidationError, validates
 
 
@@ -39,4 +42,21 @@ class CeleryTaskSchema(Schema):
 class CeleryDeleteSchema(Schema):
     task_id = fields.Str(required=True)
 
+class DownloadFileSchema(Schema):
+    fileName = fields.Str(required=True, error_messages={"required" : "File Name Is Required"})
 
+    @validates("fileName")
+    def validate_file_name(self, value):
+        if not value.endswith(".csv"):
+            raise ValidationError("File name must have a .csv extension.")
+        if "/" in value or "\\" in value:
+            raise ValidationError("File name cannot contain path separators.")
+        if len(value) > 255:
+            raise ValidationError("File name is too long.")
+
+class ValidateUuid(Schema):
+    uuid = fields.List(
+        fields.Str(),
+        required=True,
+        error_messages={"required": "Uuid Is Required"}
+    )

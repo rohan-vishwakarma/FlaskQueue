@@ -30,6 +30,30 @@
               <option name="name" value="Draft" />
               <option name="url" value="http://127.0.0.1:5000/" />
             </requestState>
+            <requestState>
+              <option name="body">
+                <bodyState>
+                  <option name="formData">
+                    <list>
+                      <formDataParameterState>
+                        <option name="key" value="datasetname" />
+                        <option name="value" value="safdsfdsfs" />
+                      </formDataParameterState>
+                      <formDataParameterState>
+                        <option name="key" value="csvfile" />
+                        <option name="type" value="FILE" />
+                        <option name="value" value="uploads\small dataset.csv" />
+                      </formDataParameterState>
+                    </list>
+                  </option>
+                  <option name="type" value="FORM_DATA" />
+                </bodyState>
+              </option>
+              <option name="id" value="6f52cc37-fa01-4fef-859e-4fa2d231b47c" />
+              <option name="method" value="POST" />
+              <option name="name" value="Create Task" />
+              <option name="url" value="http://127.0.0.1:5000/api/etl/extract" />
+            </requestState>
           </list>
         </option>
       </draftsState>
