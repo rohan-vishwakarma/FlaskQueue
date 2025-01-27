@@ -8,8 +8,7 @@ from app.models import CeleryTask, db
 from app import create_app
 from datetime import datetime
 import json, traceback
-from celery.signals import task_prerun, task_postrun, task_failure, task_retry, task_success, task_internal_error
-
+from celery.signals import task_prerun, task_postrun, task_failure, task_retry, task_success, task_internal_error, worker_shutdown
 
 app = create_app()
 
@@ -119,4 +118,21 @@ def task_retry_handler(task_id, *args, **kwargs):
         except SQLAlchemyError as e:
             db.session.rollback()
             print(f"Error updating task record on retry: {e}")
+
+
+@worker_shutdown.connect
+def on_worker_shutdown(sig, how, exitcode, **kwargs):
+    from celery.result import AsyncResult
+
+    # Fetch the list of active tasks
+    active_tasks = app.control.inspect().active()
+    if active_tasks:
+        for worker, tasks in active_tasks.items():
+            for task in tasks:
+                task_id = task['id']
+                result = AsyncResult(task_id)
+                if result.state in ['PENDING', 'STARTED']:
+                    result.update_state(state='FAILURE', meta={'exc_message': 'Worker shutdown'})
+
+
 

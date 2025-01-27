@@ -288,21 +288,12 @@
                     <div class="nav-item">
                         <a
                                 class="nav-link"
-                                href="#"
-                                data-bs-toggle="collapse"
-                                data-bs-target="#dashboards"
-                                rol="button"
-                                aria-expanded="false"
+                                href="/"
+                               
                                 aria-controls="dashboards">
                             <span class="material-symbols-outlined me-3">space_dashboard</span> Dashboards
                         </a>
-                        <div class="collapse" id="dashboards">
-                            <nav class="nav nav-pills">
-                                <a class="nav-link" href="index.html">Default</a>
-                                <a class="nav-link " href="dashboards/crypto.html">Crypto</a>
-                                <a class="nav-link " href="dashboards/saas.html">SaaS</a>
-                            </nav>
-                        </div>
+                       
                     </div>
 
                     <div class="nav-item">
@@ -398,7 +389,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label><b>Select columns to display</b>:</label>
-                    <div class="checkboxes d-flex flex-wrap gap-3">
+                    <div class="checkboxes d-flex flex-wrap gap-3" style="padding: 14px 0px 14px 0px;">
                         {% if data.columns %}
                             {% for column in data.columns %}
                                 <div class="form-check">

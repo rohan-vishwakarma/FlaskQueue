@@ -60,6 +60,9 @@ class Dataset(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(CHAR(36), ForeignKey('celery_tasks.task_id', ondelete='CASCADE'), nullable=False)
     name = db.Column(db.String(100))
+    total_rows = db.Column(db.Integer, nullable=True)
+    started_at = db.Column(db.DateTime, nullable=True)
+    finished_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)  # When the task was created
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)  # Last update time
 
@@ -69,7 +72,10 @@ class Dataset(db.Model):
             'task_id': self.task_id,
             'name': self.name,
             'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'updated_at': self.updated_at.isoformat(),
+            'total_rows': self.total_rows,
+            'started_at': self.started_at,
+            'finished_at': self.finished_at
         }
 
     @staticmethod

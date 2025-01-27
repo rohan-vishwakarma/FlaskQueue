@@ -79,9 +79,9 @@ class DatasetService:
             col_type = self.getSqlType(str(col.dataType))
 
             # Clean the column name to be SQL-friendly
-            cleaned_col_name = col_name.replace(" ", "_").lower()
+            cleaned_col_name = col_name.replace(" ", "_").replace('-', '_').replace(':', '_').lower()
 
-            column_defs.append(f"{cleaned_col_name} {col_type}")
+            column_defs.append(f"{cleaned_col_name}{"_"} {col_type}")
 
         # Create the SQL query string
         create_table_query = f"CREATE TABLE IF NOT EXISTS {table_name} (\n"

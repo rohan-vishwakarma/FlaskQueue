@@ -8,6 +8,8 @@ from app.controllers import etl
 from app.controllers import jobs
 import os
 from dotenv import load_dotenv
+from flask_cors import CORS
+
 load_dotenv()
 
 
@@ -23,9 +25,11 @@ def create_app():
     api.prefix = '/api'
     api.add_resource(etl.Extract, '/etl/extract')
     api.add_resource(jobs.Jobs, '/dataset')
+    CORS(app)
 
     db.init_app(app)
     with app.app_context():
         from .models import Products
+        from .models import Dataset
         db.create_all()
     return app

@@ -1,6 +1,8 @@
 import os
+from datetime import datetime
 from marshmallow import ValidationError
 from sqlalchemy import text
+from app.utils.helper import human_readable_date
 
 current_path = os.getcwd()
 from flask import Blueprint, render_template, request, abort
@@ -9,7 +11,33 @@ from .models import Products, db, CeleryTask, Dataset
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('dashbrd/index.html')
+    totalDatsetProcessed = db.session.query(Dataset).count()
+    totalFailedTask = db.session.query(CeleryTask).filter_by(status='FAILURE').count()
+    totalSuccessTask = db.session.query(CeleryTask).filter_by(status='SUCCESS').count()
+    totalPendingTask = db.session.query(CeleryTask).filter_by(status='PENDING').count()
+
+    query = db.session.query(Dataset).all()
+    processingTimes = []
+    for data in query:
+        data = data.to_dict()
+        started_at = datetime.strptime( str(data['started_at']), '%Y-%m-%d %H:%M:%S') if data['started_at'] is not None else None 
+        finished_at = datetime.strptime(str(data['finished_at']), '%Y-%m-%d %H:%M:%S') if data['finished_at'] is not None else None 
+        if started_at is not None and finished_at is not None:
+            processingTime = (finished_at - started_at).total_seconds()
+            processingTimes.append(processingTime)
+    
+    averageTime = sum(processingTimes) / len(processingTimes) if processingTimes else 0
+    inMinutes = averageTime / 60
+
+    data = {
+        "totalDatasetProcessed": totalDatsetProcessed,
+        "totalFailedTask": totalFailedTask,
+        "totalSuccessTask": totalSuccessTask,
+        "totalPendingTask": totalPendingTask,
+        "average_processing_time_seconds": round(inMinutes, 2)
+    }
+
+    return render_template('dashbrd/index.html', data=data)
 
 
 @bp.route('/jobs', methods=['GET'])
@@ -26,7 +54,11 @@ def jobsList():
             .all()
         )
 
-        tasks_data = [task.to_dict() for task in tasks]
+        tasks_data = []
+        for task in tasks:
+            task_dict = task.to_dict()
+            task_dict["created_at"] = human_readable_date(task_dict["created_at"])
+            tasks_data.append(task_dict)
 
         return render_template('dashbrd/job/joblist.html', data=tasks_data)
 

@@ -468,12 +468,12 @@
               <table class="table table-selectable align-middle mb-0">
                 <thead>
 
-                  <th>Name</th>
-                  <th>Status</th>
-                  <th>Schedule At</th>
-                  <th>State</th>
-                  <th>Progress</th>
-                  <th>Action</th>
+                  <th style="color: black;font-weight: 500;">Name</th>
+                  <th style="color: black;font-weight: 500;">Status</th>
+                  <th style="color: black;font-weight: 500;">Queue Time</th>
+                  <th style="color: black;font-weight: 500;">State</th>
+                  <th style="color: black;font-weight: 500;">Progress</th>
+                  <th style="color: black;font-weight: 500;">Action</th>
                 </thead>
                 <tbody>
                 {% if data %}
@@ -489,7 +489,7 @@
                             <td>
                               {{task.created_at}}
                             </td>
-                            <td>{{ task.created_at }}</td>
+                            <td></td>
                             <td>
                               <div class="progress-ring" style="width: 50px; height: 50px;">
                                   <svg width="100%" height="100%" viewBox="0 0 120 120">
